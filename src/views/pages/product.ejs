@@ -1,0 +1,177 @@
+<%- include('./../partials/head.ejs') %>
+    <div class="main">
+        <div class="container">
+            <div class="card">
+                <div class="card-header text-center">
+                    <%= title %>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="productTable" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Price</th>
+                                    <% if(title=='Product' ){ %>
+                                        <th scope="col">Is Service</th>
+                                        <% } %>
+                                            <th scope="col">Sale Quantity</th>
+                                            <th scope="col">Purchase Quantity</th>
+                                            <th scope="col">Stock Quantity</th>
+                                            <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (let product of products){ %>
+
+                                    <tr>
+                                        <td><%=product.productName %></td>
+                                        <td><%=product.price %></td>
+                                        <% if(title=='Product' ){ %>
+                                            <td>
+                                                <input class="form-check-input" 
+                                                type="checkbox" <%= product.isService? 'checked': '' %> disabled></td>
+                                            <% } %>
+                                                <td>
+                                                    <%= product.totalSaleQuantity %>
+                                                </td>
+                                                <td>
+                                                    <%= product.totalPurchaseQuantity%>
+                                                </td>
+                                                <td>
+                                                    <%= product.totalStockQuantity %>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-md btn-warning edit-btn"
+                                                        data-product="<%= product.productName %>"
+                                                        data-price="<%=product.price %>"
+                                                        data-service="<%=product.isService %>"
+                                                        data-sale="<%= product.totalSaleQuantity %>"
+                                                        data-purchase="<%= product.totalPurchaseQuantity %>"
+                                                        data-stock="<%= product.totalStockQuantity %>"
+                                                        data-id="<%=product._id %>" data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModal">
+                                                        Detail
+                                                    </button>
+                                                    <% if (user.role=='System Administer' ){ %>
+                                                        <a href="/product/delete/<%= product._id %>"
+                                                            class="btn btn-md btn-danger">
+                                                            Delete
+                                                        </a>
+                                                        <% } %>
+                                                </td>
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+
+                        </table>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-fullscreen-md-down" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Detail Form</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="my-form" action="/product/update" method="POST">
+
+                                            <div class="mb-3">
+                                                <label for="productName" class="form-label">Product Name</label>
+                                                <input type="text" name="productName" id="productName"
+                                                    class="form-control" placeholder="Enter Product Name"
+                                                    <%=user.role=='System Administer' ? '' : 'readonly' %> >
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="price" class="form-label">Price</label>
+                                                <input type="number" name="price" id="price" class="form-control"
+                                                    placeholder="Enter Price" <%=user.role=='Data Entry' ? 'readonly'
+                                                    : '' %>>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="totalSaleQuantity" class="form-label">Total Sale
+                                                    Quantity</label>
+                                                <input type="number" name="totalSaleQuantity" id="totalSaleQuantity"
+                                                    class="form-control" placeholder="Enter Total Sale Quantity"
+                                                    <%=user.role=='System Administer' ? '' : 'readonly' %>>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="totalPurchaseQuantity" class="form-label">Total Purchase
+                                                    Quantity</label>
+                                                <input type="number" name="totalPurchaseQuantity"
+                                                    id="totalPurchaseQuantity" class="form-control"
+                                                    placeholder="Enter Total Purchase Quantity"
+                                                    <%=user.role=='System Administer' ? '' : 'readonly' %>>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="totalStockQuantity" class="form-label">Total Stock
+                                                    Quantity</label>
+                                                <input type="number" name="totalStockQuantity" id="totalStockQuantity"
+                                                    class="form-control" placeholder="Enter Total Stock Quantity"
+                                                    <%=user.role=='System Administer' ? '' : 'readonly' %>>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="isService"
+                                                    id="isService" <%=user.role=='System Administer' ? '' : 'readonly' %>>
+                                                <label class="form-check-label" for="isService">
+                                                    Is Service
+                                                </label>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="hidden" name="id">
+                                            </div>
+                                            <div class="form-group mr-2 mb-3">
+                                                <input type="submit" value="Update" class="btn btn-sm btn-primary"
+                                                    <%=user.role=='Data Entry' ? 'disabled' : '' %>/>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('./../partials/tail.ejs') %>
+        <script>
+            $(document).ready(function () {
+                $('#productTable').DataTable();
+            });
+            window.onload = () => {
+                let editBtn = document.getElementsByClassName('edit-btn')
+                let form = document.getElementById('my-form')
+                    ;[...editBtn].forEach(btn => {
+                        btn.addEventListener('click', (event) => {
+                            let {
+                                product,
+                                price,
+                                service,
+                                sale,
+                                purchase,
+                                stock,
+                                id
+                            } = event.target.dataset;
+
+                            form[0].value = product
+                            form[1].value = price
+                            form[2].value = sale
+                            form[3].value = purchase
+                            form[4].value = stock
+                            form[5].checked = service === 'true'
+                            form[6].value = id
+                        })
+                    })
+            }
+        </script>
+        </body>
+
+        </html>
