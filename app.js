@@ -1,7 +1,6 @@
 // Import Module
 const express=require('express');
 const mongoose=require('mongoose')
-// const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config()
 const path=require('path')
 
@@ -49,13 +48,4 @@ mongoose.connect(con_string,{
 }).catch(e=>{
     console.log(e)
 })
-// const client = new MongoClient(con_string, { 
-    // useNewUrlParser: true, 
-    // useUnifiedTopology: true, 
-    // serverApi: ServerApiVersion.v1 
-// });
-// client.connect(err => {
-//   const collection = client.db("arko-shop").collection("users");
-//   // perform actions on the collection object
-//   client.close();
-// });
+

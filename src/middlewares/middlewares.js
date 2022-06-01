@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express=require('express')
-const morgan=require('morgan')
+// const morgan=require('morgan')
 const session=require('express-session')
 const Flash=require('connect-flash')
 const MongoDBStore=require('connect-mongodb-session')(session)
@@ -17,7 +17,6 @@ const store=new MongoDBStore({
 })
 
 const middleware=[
-    morgan('dev'),
     express.json(),
     express.urlencoded({extended:true}),
     session({
